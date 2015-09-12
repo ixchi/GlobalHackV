@@ -1,0 +1,52 @@
+{% extends "layout.twig" %}
+
+{% set title = 'Average Citation to Court Times' %}
+
+{% block content %}
+	<div class="jumbotron">
+		<div class="container">
+			<h1>Average days to court from citation</h1>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="chart"></div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script>
+	    var xhr = new XMLHttpRequest();
+	    xhr.open('GET', '/averages.json');
+	    xhr.onload = function () {
+	    	var data = JSON.parse(xhr.responseText);
+
+	    	function drawMap() {
+	    		var m = new google.visualization.DataTable();
+	    		m.addColumn('number', 'LATITUDE', 'Latitude');
+	    		m.addColumn('number', 'LONGITUDE', 'Longitude');
+	    		m.addColumn('number', 'VALUE', 'Value');
+	    		m.addColumn('string', 'HOVER', 'HoverText');
+
+	    		var rows = []
+	    		for (var i = 0; i < data.length; i++) {
+	    			rows.push([parseFloat(data[i].Y), parseFloat(data[i].X), parseInt(data[i].avg), data[i].Municipali]);
+	    		}
+
+	    		m.addRows(rows);
+
+	    		var options = { showTip: true, region: 'US', resolution: 'provinces', displayMode: 'markers', 'dataMode': 'markers', 'colors': [0xFF8747, 0xFFB581, 0xc06000] };
+	    		var map = new google.visualization.GeoMap(document.querySelector('.chart'));
+	    		map.draw(m, options);
+	    	}
+
+	    	setTimeout(function () {
+	    		google.load('visualization', '1', { 'packages': ['geomap', 'geochart', 'table'], callback: drawMap});
+	    	}, 1000);
+	    };
+	    xhr.send();
+    </script>
+{% endblock %}

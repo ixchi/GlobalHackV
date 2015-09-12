@@ -32,6 +32,22 @@
 		return result;
 	};
 
+	function extractDomain(url) {
+	    var domain;
+	    //find & remove protocol (http, ftp, etc.) and get domain
+	    if (url.indexOf("://") > -1) {
+	        domain = url.split('/')[2];
+	    }
+	    else {
+	        domain = url.split('/')[0];
+	    }
+
+	    //find & remove port number
+	    domain = domain.split(':')[0];
+
+	    return domain;
+	}
+
 	$('.warrant').click(function (e) {
 		if (e.target.tagName == 'STRONG') {
 			e.target = e.target.parentNode;
@@ -52,6 +68,28 @@
 		} else {
 			document.querySelector('.expired-plates').classList.add('hidden');
 		}
+		if (v.website != '') {
+			document.querySelector('.website').classList.remove('hidden');
+			document.querySelector('.website-link').href = v.website;
+			document.querySelector('.website-link').innerHTML = extractDomain(v.website);
+		} else {
+			document.querySelector('.website').classList.add('hidden');
+		}
+		if (v.phone != '') {
+			document.querySelector('.phone').classList.remove('hidden');
+			document.querySelector('.phone-link').href = 'tel:' + v.phone;
+			document.querySelector('.phone-link').innerHTML = v.phone;
+		} else {
+			document.querySelector('.phone').classList.add('hidden');
+		}
+		if (v.payment != '') {
+			document.querySelector('.payment').classList.remove('hidden');
+			document.querySelector('.payment-link').href = v.payment;
+			document.querySelector('.payment-link').innerHTML = extractDomain(v.payment);
+		} else {
+			document.querySelector('.payment').classList.add('hidden');
+		}
+		document.querySelector('#fineModal .modal-title').innerHTML = 'Fine for ' + v.violation_description;
 	});
 
 	$('#moreInfoLicense').click(function (e) {

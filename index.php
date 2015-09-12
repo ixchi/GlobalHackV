@@ -21,6 +21,27 @@ $klein->respond('GET', '/', function ($request, $response, $service, $app) {
 	return $service->twig->render('home.twig');
 });
 
+$klein->respond('GET', '/resources', function ($request, $response, $service, $app) {
+	return $service->twig->render('resources.twig');
+});
+
+$klein->respond('GET', '/averages', function ($request, $response, $service, $app) {
+	return $service->twig->render('averages.twig');
+});
+
+$klein->respond('GET', '/averages.json', function ($request, $response, $service, $app) {
+	$db = $app->db;
+	$stmt = $db->prepare('select `Municipali`, `X`, `Y`, avg(`waiting_time`) as `avg`
+from citations
+inner join locations on citations.court_location = upper(locations.`Municipali`)
+where court_location <> \'\'
+group by court_location
+order by `avg` asc');
+	$stmt->execute();
+
+	return $response->json($stmt->fetchAll(PDO::FETCH_ASSOC));
+});
+
 $klein->respond('POST', '/search', function ($request, $response, $service, $app) {
 	if (!$request->first_name || !$request->last_name) {
 		return $response->redirect('/');
@@ -113,7 +134,10 @@ ORDER BY
 			$info->fine[] = array(
 				'amount' => $row['fine_amount'],
 				'violation' => $row['violation_number'],
-				'citation' => $row['citation_number']
+				'citation' => $row['citation_number'],
+				'violation_description' => $row['violation_description'],
+				'fine_amount' => $row['fine_amount'],
+				'court_cost' => $row['court_cost']
 			);
 		}
 

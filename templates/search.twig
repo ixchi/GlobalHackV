@@ -13,10 +13,10 @@
 				{% endfor %}
 
 				{% for fine in info.fine %}
-					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-violation="{{ fine.violation }}" style="cursor: pointer">You have a fine for {{ fine.amount }} plus $24.50 in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
+					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-violation="{{ fine.violation }}" style="cursor: pointer">You have a fine for {{ fine.violation_description }} for {{ fine.fine_amount }} plus {{ fine.court_cost }} in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
 				{% endfor %}
 
-				{% if info.fines_owed != '' %}You owe a total <strong>${{ info.fines_owed }}</strong> in fines, and <strong>${{ info.fees_owed }}</strong> in court fees. You could pay this off in <strong>{{ (info.fines_owed+info.fees_owed) // 15 }} hours</strong> of community service.{% endif %}
+				{% if info.fines_owed != '' %}You owe a total <strong>${{ info.fines_owed }}</strong> in fines, and <strong>{{ info.fees_owed }}</strong> in court fees. You could pay this off in <strong>{{ (info.fines_owed+info.fees_owed) // 15 }} hours</strong> of community service.{% endif %}
 			</div>
 		</div>
 
@@ -117,6 +117,18 @@
 					</ol>
 
 					<b>NOTE:</b>A <a href="http://dor.mo.gov/motorv/help.php#penalties"><b>$5 renewal penalty</b></a> will be charged if you renew your plates after the expiration date.
+					</div>
+
+					<div class="website hidden">
+						You may be able to find more information at <a href="#" class="website-link"></a>.
+					</div>
+
+					<div class="phone hidden">
+						You may be able to call for more information at <a href="#" class="phone-link"></a>.
+					</div>
+
+					<div class="payment hidden">
+						You can pay online at <a href="#" class="payment-link"></a>.
 					</div>
 				</div>
 
