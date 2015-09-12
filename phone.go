@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 var data map[string]map[string]interface{}
@@ -35,11 +37,12 @@ func main() {
 	go func() {
 		for msg := range messages {
 			m, err := nexmoClient.SMS.Send(&nexmo.SMSMessage{
-				From:  "13374192686",
-				To:    msg.MSISDN,
-				Type:  nexmo.Text,
-				Text:  "Hello! :)",
-				Class: nexmo.Standard,
+				From:            "asdf",
+				To:              msg.MSISDN,
+				Type:            nexmo.Text,
+				Text:            "Hello! :)",
+				Class:           nexmo.Standard,
+				ClientReference: "gonexmo-test " + strconv.FormatInt(time.Now().Unix(), 10),
 			})
 			log.Printf("%+v", msg)
 			log.Printf("%+v", m)
