@@ -34,13 +34,14 @@ func main() {
 
 	go func() {
 		for msg := range messages {
-			_, err = nexmoClient.SMS.Send(&nexmo.SMSMessage{
+			m, err := nexmoClient.SMS.Send(&nexmo.SMSMessage{
 				From:  "13374192686",
 				To:    msg.MSISDN,
 				Type:  nexmo.Text,
 				Text:  "Hello! :)",
 				Class: nexmo.Standard,
 			})
+			log.Println(m)
 			if err != nil {
 				log.Fatal(err)
 			}
