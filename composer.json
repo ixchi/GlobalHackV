@@ -1,5 +1,6 @@
 {
     "require": {
-        "klein/klein": "~2.1"
+        "klein/klein": "~2.1",
+        "twig/twig": "~1.21"
     }
 }

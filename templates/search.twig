@@ -1,0 +1,46 @@
+{% extends "layout.twig" %}
+
+{% set title = 'Home' %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1>hi</h1>
+
+				<h2>you did bad stuff</h2>
+
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Citation number</th>
+							<th>Court Date</th>
+							<th>Court Location</th>
+							<th>Court Address</th>
+							<th>Violation Description</th>
+							<th>Warrant status</th>
+							<th>Warrant number</th>
+							<th>Status</th>
+							<th>Status date</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for result in results %}
+							<tr {% if result.warrant_status == 'TRUE' %} class="danger"{% endif %}>
+								<td>{{ result.citation_number }}</td>
+								<td>{{ result.court_date }}</td>
+								<td>{{ result.court_location }}</td>
+								<td>{{ result.court_address }}</td>
+								<td>{{ result.violation_description }}</td>
+								<td>{{ result.warrant_status }}</td>
+								<td>{{ result.warrant_number }}</td>
+								<td>{{ result.status }}</td>
+								<td>{{ result.status_date }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
