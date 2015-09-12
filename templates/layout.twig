@@ -21,12 +21,33 @@
 	$('.datepicker').birthdayPicker();
 	</script>
 	<script>
+	var getByViolation = function (violation) {
+		var result = false;
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].violation_number === violation) {
+				result = data[i];
+			}
+		}
+
+		return result;
+	};
+
 	$('.warrant').click(function (e) {
-		console.log(e.target.dataset.citation);
+		console.log(getByViolation(e.target.dataset.violation));
 	});
 
 	$('.fine').click(function (e) {
-		console.log(e.target.dataset.citation);
+		if (e.target.tagName == 'STRONG') {
+			e.target = e.target.parentNode;
+		}
+		var v = getByViolation(e.target.dataset.violation);
+		document.querySelector('.fines-owed').innerHTML = v.fine_amount;
+		document.querySelector('.fines-court').innerHTML = v.court_location;
+		if (v.violation_description == 'Expired License Plates (Tags)') {
+			document.querySelector('.expired-plates').classList.remove('hidden');
+		} else {
+			document.querySelector('.expired-plates').classList.add('hidden');
+		}
 	});
 
 	$('#moreInfoLicense').click(function (e) {

@@ -9,11 +9,11 @@
 				<h1>Hello, {{ results[0].first_name }} {{ results[0].last_name }}</h1>
 
 				{% for warrant in info.warrant %}
-					<div class="alert alert-danger warrant" data-toggle="modal" data-target="#warrantModal" data-citation="{{ warrant }}" style="cursor: pointer">You have a warrant for your arrest! Click here for more information about <strong>citation {{ warrant }}</strong>.</div>
+					<div class="alert alert-danger warrant" data-toggle="modal" data-target="#warrantModal" data-violation="{{ warrant.violation }}" style="cursor: pointer">You have a warrant for your arrest! Click here for more information about <strong>citation {{ warrant.citation }}</strong>.</div>
 				{% endfor %}
 
 				{% for fine in info.fine %}
-					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-citation="{{ fine.citation }}" style="cursor: pointer">You have a fine for {{ fine.amount }} plus $24.50 in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
+					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-violation="{{ fine.violation }}" style="cursor: pointer">You have a fine for {{ fine.amount }} plus $24.50 in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
 				{% endfor %}
 			</div>
 		</div>
@@ -82,10 +82,8 @@
 				</div>
 
 				<div class="modal-body">
-					if balance out...
-					You owe _____ in fines, click ____ to pay your fine to ____ court
-					if (violation_description == Expired License Plates (Tags) ) no clue how to do this if statement. sorry
-
+					You owe <span class="fines-owed"></span> in fines, You need to pay your fine to the <span class="fines-court"> court.</span>.
+					<div class="expired-plates hidden">
 					<b>To renew your license plates, you will need:</b>
 					<ol>
 						<li>
@@ -95,13 +93,21 @@
 							A Missouri <a href="http://dor.mo.gov/motorv/help.php#safety"><b>safety inspection</b></a> and/or <a href="http://dor.mo.gov/motorv/help.php#emissions"><b>emissions inspection</b></a> certificate not more than 60 days old, if applicable;
 						</li>
 						<li>
-							A <a href="http://dor.mo.gov/motorv/help.php#propertytax"><b>paid personal property tax receipt</b></a>(original, copy, or electronic if legible) or a <a href="http://dor.mo.gov/motorv/help.php#nonassesment"><b>statement of non-assessment</b></a> from your county of residence (or city of St. Louis) for the previous year for a one year registration, or receipts from the previous two years if the registration you are renewing was a two-year registration;</li>
-	<li style="font-weight: 400;"><span style="font-weight: 400;">A current </span><a href="http://dor.mo.gov/motorv/help.php#proofins"><b>insurance identification card</b></a><span style="font-weight: 400;"> (original, copy, or electronic if legible) or other proof of </span><a href="http://dor.mo.gov/drivers/insurinfo.php"><b>financial responsibility</b></a><span style="font-weight: 400;">; and</span></li>
-	<li style="font-weight: 400;"><a href="http://dor.mo.gov/motorv/fees.php#passenger"><b>The correct registration (license plate) and processing fee</b></a><span style="font-weight: 400;">.</span></li>
-	<li style="font-weight: 400;"><span style="font-weight: 400;">Then we need this point to be a catch all for stuff, however it will catch if he has a warrant out for his arrest. I guess talk about how if you can’t afford your stuff okay, big woop, set up a payment plan with the judge and contact your local court. </span></li>
-</ol>
-					<b>NOTE:</b><span style="font-weight: 400;"> A </span><a href="http://dor.mo.gov/motorv/help.php#penalties"><b>$5 renewal penalty</b></a><span style="font-weight: 400;"> will be charged if you renew your plates after the expiration date.</span>
+							A <a href="http://dor.mo.gov/motorv/help.php#propertytax"><b>paid personal property tax receipt</b></a>(original, copy, or electronic if legible) or a <a href="http://dor.mo.gov/motorv/help.php#nonassesment"><b>statement of non-assessment</b></a> from your county of residence (or city of St. Louis) for the previous year for a one year registration, or receipts from the previous two years if the registration you are renewing was a two-year registration;
+						</li>
+						<li>
+							A current <a href="http://dor.mo.gov/motorv/help.php#proofins"><b>insurance identification card</b></a> (original, copy, or electronic if legible) or other proof of <a href="http://dor.mo.gov/drivers/insurinfo.php"><b>financial responsibility</b></a>; and
+						</li>
+						<li>
+							<a href="http://dor.mo.gov/motorv/fees.php#passenger"><b>The correct registration (license plate) and processing fee</b></a>.</span>
+						</li>
+						<li>
+							Then we need this point to be a catch all for stuff, however it will catch if he has a warrant out for his arrest. I guess talk about how if you can’t afford your stuff okay, big woop, set up a payment plan with the judge and contact your local court.
+						</li>
+					</ol>
 
+					<b>NOTE:</b>A <a href="http://dor.mo.gov/motorv/help.php#penalties"><b>$5 renewal penalty</b></a> will be charged if you renew your plates after the expiration date.
+					</div>
 				</div>
 
 				<div class="modal-footer">
@@ -112,6 +118,6 @@
 	</div>
 
 	<script>
-	var data = JSON.parse('{{ results | json_encode() | raw }}');
+	var data = JSON.parse('{{ results | json_encode() | e('js') | raw }}');
 	</script>
 {% endblock %}

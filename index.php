@@ -63,13 +63,17 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 	foreach ($results as $row) {
 		if ($row['status']  == 'FTA WARRANT ISSUED') {
 			if (!property_exists($info, 'warrant')) $info->warrant = array();
-			$info->warrant[] = $row['citation_number'];
+			$info->warrant[] = array(
+				'violation' => $row['violation_number'],
+				'citation' => $row['citation_number']
+			);
 		}
 
 		if ($row['status']  == 'CONT FOR PAYMENT') {
 			if (!property_exists($info, 'fine')) $info->fine = array();
 			$info->fine[] = array(
 				'amount' => $row['fine_amount'],
+				'violation' => $row['violation_number'],
 				'citation' => $row['citation_number']
 			);
 		}
