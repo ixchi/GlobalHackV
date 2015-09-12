@@ -37,7 +37,7 @@ func main() {
 	go func() {
 		for msg := range messages {
 			m, err := nexmoClient.SMS.Send(&nexmo.SMSMessage{
-				From:            "0013374192686",
+				From:            "13374192686",
 				To:              msg.MSISDN,
 				Type:            nexmo.Text,
 				Text:            "Hello! :)",
