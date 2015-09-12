@@ -44,7 +44,8 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 	$name = "%{$request->last_name}%";
 	$stmt->bindParam(':name', $name);
 	$stmt->bindParam(':birthday', date('Y-m-d', $date));
-	$stmt->bindParam(':license', $request->drivers_license_id);
+	$license = $request->drivers_license_id;
+	$stmt->bindParam(':license', $license);
 	$stmt->execute();
 
 	$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
