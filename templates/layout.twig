@@ -37,6 +37,7 @@
 			e.target = e.target.parentNode;
 		}
 		var v = getByViolation(e.target.dataset.violation);
+		console.log(e, v);
 		$('.warrant-description').innerHTML = v.violation_description;
 	});
 
