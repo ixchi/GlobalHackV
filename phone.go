@@ -41,10 +41,9 @@ func main() {
 				Text:  "Hello! :)",
 				Class: nexmo.Standard,
 			})
-			log.Println(m)
-			if err != nil {
-				log.Fatal(err)
-			}
+			log.Printf("%+v", msg)
+			log.Printf("%+v", m)
+			log.Printf("%+v", err)
 		}
 	}()
 
