@@ -11,7 +11,7 @@ $klein->respond(function ($request, $response, $service, $app) {
 	$service->twig = $twig;
 
 	$app->register('db', function () {
-		return new PDO('mysql:host=127.0.0.1;dbname=globalhackv', 'root', '');
+		return new PDO('mysql:host=127.0.0.1;dbname=globalhackv', 'globalhackv', 'globalhack');
 	});
 });
 
@@ -28,7 +28,8 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 	$stmt = $db->prepare('SELECT * FROM `good_data_fixed` WHERE `last_name` LIKE :name AND `date_of_birth` = :birthday ORDER BY `status_date` DESC');
 	$name = "%{$request->last_name}%";
 	$stmt->bindParam(':name', $name);
-	$stmt->bindParam(':birthday', $request->date_of_birth);
+	$birth = $request->date_of_birth;
+	$stmt->bindParam(':birthday', $birth);
 	$stmt->execute();
 
 	$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -44,12 +45,12 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 	$info = new stdClass();
 	foreach ($results as $row) {
 		if ($row['status']  == 'FTA WARRANT ISSUED') {
-			if (!$info->warrant) $info->warrant = array();
+			if (!property_exists($info, 'warrant')) $info->warrant = array();
 			$info->warrant[] = $row['citation_number'];
 		}
 
 		if ($row['status']  == 'CONT FOR PAYMENT') {
-			if (!$info->fine) $info->fine = array();
+			if (!property_exists($info, 'fine')) $info->fine = array();
 			$info->fine[] = array(
 				'amount' => $row['fine_amount'],
 				'citation' => $row['citation_number']
