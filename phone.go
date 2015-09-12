@@ -20,7 +20,7 @@ func main() {
 
 	go func() {
 		for msg := range messages {
-			log.Println(msg)
+			log.Printf("%+v", msg)
 		}
 	}()
 
