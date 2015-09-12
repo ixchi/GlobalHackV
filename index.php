@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Chicago');
+
 require __DIR__ . '/vendor/autoload.php';
 
 $klein = new \Klein\Klein();
@@ -20,16 +22,29 @@ $klein->respond('GET', '/', function ($request, $response, $service, $app) {
 });
 
 $klein->respond('POST', '/search', function ($request, $response, $service, $app) {
-	if (!$request->first_name || !$request->last_name || !$request->date_of_birth) {
+	if (!$request->first_name || !$request->last_name) {
 		return $response->redirect('/');
 	}
 
+	$birthday = "{$request->birth['year']}-{$request->birth['month']}-{$request->birth['day']}";
+
+	$date = strtotime($birthday);
+
 	$db = $app->db;
-	$stmt = $db->prepare('SELECT * FROM `good_data_fixed` WHERE `last_name` LIKE :name AND `date_of_birth` = :birthday ORDER BY `status_date` DESC');
+	$stmt = $db->prepare('SELECT
+		*
+	FROM
+		`good_data_fixed`
+	WHERE
+		`last_name` LIKE :name AND
+		`date_of_birth` = :birthday AND
+		(`drivers_license_number` = \'\' OR `drivers_license_number` LIKE :license)
+	ORDER BY
+		`status_date` DESC');
 	$name = "%{$request->last_name}%";
 	$stmt->bindParam(':name', $name);
-	$birth = $request->date_of_birth;
-	$stmt->bindParam(':birthday', $birth);
+	$stmt->bindParam(':birthday', date('Y-m-d', $date));
+	$stmt->bindParam(':license', $request->drivers_license_id);
 	$stmt->execute();
 
 	$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -38,8 +53,8 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 		return $service->twig->render('noresults.twig', array(
 			'first' => $request->first_name,
 			'last' => $request->last_name,
-			'birthday' => $request->date_of_birth
-			//Need DL_ID here, or something, like yeah....
+			'birthday' => date('Y-m-d', $date),
+			'drivers_license_id' => $request->drivers_license_id
 		));
 	}
 
