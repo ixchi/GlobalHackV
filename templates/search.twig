@@ -7,11 +7,11 @@
 		<div class="row">
 			<div class="col-sm-12">
 				{% for warrant in info.warrant %}
-					<div class="alert alert-danger" data-toggle="modal" data-target="#warrantModal">You have a warrant for your arrest! Look at <strong>citation {{ warrant }}</strong> below for more information.</div>
+					<div class="alert alert-danger warrant" data-toggle="modal" data-target="#warrantModal" data-citation="{{ warrant }}" style="cursor: pointer">You have a warrant for your arrest! Click here for more information about <strong>citation {{ warrant }}</strong>.</div>
 				{% endfor %}
 
 				{% for fine in info.fine %}
-					<div class="alert alert-warning" data-toggle="modal" data-target="#fineModal">You have a fine for {{ fine.amount }} plus $24.50 in court fees. Look at <strong>citation {{ fine.citation }}</strong> below for more information.</div>
+					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-citation="{{ fine.citation }}" style="cursor: pointer">You have a fine for {{ fine.amount }} plus $24.50 in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
 				{% endfor %}
 			</div>
 		</div>
@@ -91,4 +91,8 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+	var data = JSON.parse('{{ results | json_encode() | raw }}');
+	</script>
 {% endblock %}
