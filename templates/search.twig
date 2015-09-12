@@ -39,7 +39,7 @@
 								<tr {% if result.warrant_status == 'TRUE' %} class="danger" id="{{ result.warrant_number }}"{% elseif result.status == 'DISMISS WITHOUT COSTS' %}class="success"{% elseif result.status == 'CLOSED' %}class="info"{% elseif result.status == 'CONT FOR PAYMENT' %}class="warning"{% endif %}>
 									<td>{{ result.citation_number }}</td>
 									<td>{{ result.court_date }}</td>
-									<td>{{ result.court_address }}, {{ result.court_location }}</td>
+									<td><a href="http://maps.google.com/?q={{ result.court_address }}, {{ result.court_location }}">{{ result.court_address }}, {{ result.court_location }}</a></td>
 									<td>{{ result.violation_description }}</td>
 									<td>{% if result.warrant_number == '' %}No warrant{% else %}{{ result.warrant_number }}{% endif %}</td>
 									<td>{{ result.status }}</td>
