@@ -32,14 +32,53 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 
 	$db = $app->db;
 	$stmt = $db->prepare('SELECT
-		*
-	FROM
-		`good_data_fixed`
-	WHERE
-		`last_name` LIKE :name AND
-		`date_of_birth` = :birthday AND
-		(`drivers_license_number` = \'\' OR `drivers_license_number` LIKE :license)
-	ORDER BY
+	violations.citation_number,
+	violation_number,
+	citation_date,
+	first_name,
+	last_name,
+	date_of_birth,
+	defendant_address,
+	defendant_city,
+	defendant_state,
+	drivers_license_number,
+	court_date,
+	court_location,
+	court_address,
+	violation_description,
+	warrant_status,
+	warrant_number,
+	status,
+	status_date,
+	fine_amount,
+	court_cost,
+	X,
+	Y,
+	`Municipal Website` AS `website`,
+	`Court Clerk Phone Number` AS `phone`,
+	`Online Payment System Provider` AS `payment`
+FROM
+	citations
+INNER JOIN
+	violations ON
+		citations.citation_number = violations.citation_number
+INNER JOIN
+	locations ON
+		court_address = locations.address
+JOIN
+	munipality ON
+		court_location = UPPER(Municipality)
+WHERE
+	`last_name` LIKE :name AND
+	`date_of_birth` = :birthday AND
+	(`drivers_license_number` = \'\' OR `drivers_license_number` LIKE :license)
+HAVING
+	`defendant_city` != \'\' AND
+	`defendant_state` != \'\' AND
+	`drivers_license_number` != \'\' AND
+	`court_address` != \'\' AND
+	`defendant_address` != \'\'
+ORDER BY
 		`status_date` DESC');
 	$name = "%{$request->last_name}%";
 	$stmt->bindParam(':name', $name);
@@ -76,6 +115,13 @@ $klein->respond('POST', '/search', function ($request, $response, $service, $app
 				'violation' => $row['violation_number'],
 				'citation' => $row['citation_number']
 			);
+		}
+
+		if ($row['fine_amount'] != '') {
+			if (!property_exists($info, 'fines_owed')) $info->fines_owed = 0;
+			if (!property_exists($info, 'fees_owed')) $info->fees_owed = 0;
+			$info->fines_owed = ((int) substr($row['fine_amount'], 1)) + $info->fines_owed;
+			$info->fees_owed = ((int) substr($row['court_cost'], 1)) + $info->fees_owed;
 		}
 	}
 

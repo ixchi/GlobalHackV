@@ -15,6 +15,8 @@
 				{% for fine in info.fine %}
 					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-violation="{{ fine.violation }}" style="cursor: pointer">You have a fine for {{ fine.amount }} plus $24.50 in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
 				{% endfor %}
+
+				{% if info.fines_owed != '' %}You owe a total <strong>${{ info.fines_owed }}</strong> in fines, and <strong>${{ info.fees_owed }}</strong> in court fees. You could pay this off in <strong>{{ (info.fines_owed+info.fees_owed) // 15 }} hours</strong> of community service.{% endif %}
 			</div>
 		</div>
 
@@ -32,6 +34,7 @@
 								<th>Violation Description</th>
 								<th>Warrant number</th>
 								<th>Status</th>
+								<th>Fine amount</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -43,6 +46,7 @@
 									<td>{{ result.violation_description }}</td>
 									<td>{% if result.warrant_number == '' %}No warrant{% else %}{{ result.warrant_number }}{% endif %}</td>
 									<td>{{ result.status }}</td>
+									<td>{{ result.fine_amount }}</td>
 								</tr>
 							{% endfor %}
 						</tbody>
@@ -67,7 +71,7 @@
 					</p>
 
 					<p>
-						<span class="warrant-description"></span>
+						Reason provided is: <span class="warrant-description"></span>
 					</p>
 				</div>
 
