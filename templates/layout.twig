@@ -33,7 +33,11 @@
 	};
 
 	$('.warrant').click(function (e) {
-		console.log(getByViolation(e.target.dataset.violation));
+		if (e.target.tagName == 'STRONG') {
+			e.target = e.target.parentNode;
+		}
+		var v = getByViolation(e.target.dataset.violation);
+		$('.warrant-description').innerHTML = v.violation_description;
 	});
 
 	$('.fine').click(function (e) {
