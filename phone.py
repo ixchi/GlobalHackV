@@ -163,8 +163,6 @@ def results(request):
     cur.close()
     db.close()
 
-    t.say('Hello %s %s,' % (result[0][3], result[0][4]))
-
     total_cost = 0
     total_fees = 0
     courts = []
