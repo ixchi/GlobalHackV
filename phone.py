@@ -135,6 +135,8 @@ def results(request):
 
     total_cost = 0
     total_fees = 0
+    courts = []
+    courts.append('goodbye')
 
     dates = {}
     for row in result:
@@ -143,6 +145,8 @@ def results(request):
             nice = d.strftime('%A, %B, %-d, %Y')
 
             dates[row[0]] = {'date': nice, 'location': row[1], 'events': []}
+
+        courts.append(row[1])
 
         dates[row[0]]['events'].append({
             'fine': row[6],
@@ -173,7 +177,41 @@ def results(request):
         t.say('Your total fines are $%.2f and your total fees are $%.2f, bringing the total cost to $%.2f.' % (
             total_cost, total_fees, total_cost+total_fees))
 
-    t.say('Thank you for calling, have a nice day.')
+    t.ask(choices=courts, say='If you would like to talk to a court clerk about this, please say one of the following courts, or say goodbye: ' + ', '.join(courts), attempts=3)
+    t.on(event='continue', next='/redir')
+
+    return t.RenderJson()
+
+@post('/redir')
+def redir(request):
+    r = Request(request.body)
+    t = Tropo()
+
+    answer = r.getInterpretation()
+
+    if answer == 'goodbye':
+        t.say('Thank you for calling, have a good day')
+
+        return t.RenderJson()
+
+    t.say('As we currently do not have transfer abilites, here is the phone number: ')
+
+    db = MySQLdb.connect(
+        host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
+    cur = db.cursor()
+
+    cur.execute('SELECT `Court Clerk Phone Number` as `phone` from `munipality` where `Municipality` = UPPER(%s)' % (answer))
+    result = cur.fetchone()
+
+    cur.close()
+    db.close()
+
+    if result[0] == '':
+        t.say('We are sorry, we do not have a phone number for this court.')
+
+        return t.RenderJson()
+
+    t.say(result[0])
 
     return t.RenderJson()
 
