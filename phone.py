@@ -177,7 +177,9 @@ def results(request):
         t.say('Your total fines are $%.2f and your total fees are $%.2f, bringing the total cost to $%.2f.' % (
             total_cost, total_fees, total_cost+total_fees))
 
-    t.ask(choices=courts, say='If you would like to talk to a court clerk about this, please say one of the following courts, or say goodbye: ' + ', '.join(courts), attempts=3)
+    say = 'If you would like to talk to a court clerk about this, please say any of the following courts, or say goodbye: %s' % (', '.join(courts))
+
+    t.ask(choices=courts, say=say, attempts=3)
     t.on(event='continue', next='/redir')
 
     return t.RenderJson()
