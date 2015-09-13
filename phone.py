@@ -29,7 +29,9 @@ def birthday_month(request):
 
   current[r._sessionId] = { 'birthday': { 'year': answer } }
 
-  choices = Choices('[1-2 DIGITS]', mode='any')
+  print current[r._sessionId]
+
+  choices = Choices('1(1, jan, january), 2(2, feb, february), 3(3, mar, march), 4(4, april), 5(5, may), 6(6, june), 7(7, july), 8(8, aug, august), 9(9, sept, september), 10(10, october), 11(11, nov, november), 12(12, dec, december)', mode='any')
   t.ask(choices, timeout=15, name='birthday_month', say='Please enter your month of birth as a number', attempts=3)
 
   t.on(event='continue', next='/birthday_day')
@@ -44,6 +46,8 @@ def birthday_day(request):
   answer = r.getInterpretation()
 
   current[r._sessionId]['birthday']['month'] = answer
+
+  print current[r._sessionId]
 
   choices = Choices('[1-2 DIGITS]', mode='any')
   t.ask(choices, timeout=15, name='birthday_day', say='Please enter your date of birth', attempts=3)
@@ -62,6 +66,8 @@ def name(request):
   current[r._sessionId]['birthday']['day'] = answer
 
   b = current[r._sessionId]['birthday']
+
+  print current[r._sessionId]
 
   if len(b['month']) == 1: b['month'] = '0' + b['month']
   if len(b['day']) == 1: b['day'] = '0' + b['day']
@@ -105,6 +111,8 @@ def results(request):
   answer = r.getInterpretation()
 
   u = current[r._sessionId]
+
+  print current[r._sessionId]
 
   db = MySQLdb.connect(host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
   cur = db.cursor()
