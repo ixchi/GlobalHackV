@@ -106,6 +106,38 @@ def name(request):
 
     t.ask(choices=names, say='Please say your last name', attempts=3)
 
+    t.on(event='continue', next='/license')
+
+    return t.RenderJson()
+
+
+@post('/license')
+def license(request):
+    r = Result(request.body)
+    t = Tropo()
+
+    answer = r.getInterpretation()
+
+    u = current[r._sessionId]
+    current[r._sessionId]['last_name'] = answer
+
+    db = MySQLdb.connect(
+        host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
+    cur = db.cursor()
+
+    cur.execute('SELECT first_name, last_name FROM good_data_fixed WHERE date_of_birth = %s AND last_name LIKE %s AND status <> \'CLOSED\' AND status <> \'DISMISS WITHOUT COSTS\'', (u[
+                'birthday'], answer))
+    result = cur.fetchall()
+
+    cur.close()
+    db.close()
+
+    t.say('Hello %s %s,' % (result[0][0], result[0][1]))
+
+    choices = Choices('[4 DIGITS]', mode='dtmf', attempts=3)
+    t.ask(choices, timeout=15, name='last_drivers',
+          say='As a final validation, please enter the last four digits of your driver\'s license I D')
+
     t.on(event='continue', next='/results')
 
     return t.RenderJson()
@@ -124,8 +156,8 @@ def results(request):
         host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
     cur = db.cursor()
 
-    cur.execute('SELECT court_date, court_location, violation_description, first_name, last_name, warrant_status, fine_amount, court_cost FROM good_data_fixed WHERE date_of_birth = %s AND last_name LIKE %s AND status <> \'CLOSED\' AND status <> \'DISMISS WITHOUT COSTS\'', (u[
-                'birthday'], answer, ))
+    cur.execute('SELECT court_date, court_location, violation_description, first_name, last_name, warrant_status, fine_amount, court_cost FROM good_data_fixed WHERE date_of_birth = %s AND last_name LIKE %s AND drivers_license_number LIKE %s status <> \'CLOSED\' AND status <> \'DISMISS WITHOUT COSTS\'', (u[
+                'birthday'], u['last_name'], '%' + u))
     result = cur.fetchall()
 
     cur.close()
