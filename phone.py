@@ -12,7 +12,7 @@ def index(request):
 
   t.say('Welcome to the automated voice driving citations checker, a free service to find where and when you need to appear in court.')
 
-  choices = Choices('[2-4 DIGITS]', mode='any')
+  choices = Choices('[2-4 DIGITS]', mode='dtmf', attempts=3)
   t.ask(choices, timeout=15, name='birthday_year', say='To verify who you are, please start by entering your four digit year of birth')
 
   t.on(event='continue', next='/birthday_month')
@@ -29,8 +29,8 @@ def birthday_month(request):
 
   current[r._sessionId] = { 'birthday': { 'year': answer } }
 
-  choices = Choices('[1-2 DIGITS]', mode='any')
-  t.ask(choices, timeout=15, name='birthday_month', say='Please enter your month of birth as a number')
+  choices = Choices('[1-2 DIGITS]', mode='dtmf')
+  t.ask(choices, timeout=15, name='birthday_month', say='Please enter your month of birth as a number', attempts=3)
 
   t.on(event='continue', next='/birthday_day')
 
@@ -45,8 +45,8 @@ def birthday_day(request):
 
   current[r._sessionId]['birthday']['month'] = answer
 
-  choices = Choices('[1-2 DIGITS]', mode='any')
-  t.ask(choices, timeout=15, name='birthday_day', say='Please enter your date of birth')
+  choices = Choices('[1-2 DIGITS]', mode='dtmf')
+  t.ask(choices, timeout=15, name='birthday_day', say='Please enter your date of birth', attempts=3)
 
   t.on(event='continue', next='/name')
 
