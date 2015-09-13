@@ -145,7 +145,7 @@ def results(request):
       t.say('Violation ' + violation['description'])
 
       if violation['fine'] != '':
-        t.say('with a $%s fine and $%s court fee' % (violation['fine'], violation['fee']))
+        t.say('with a %s fine and %s court fee' % (violation['fine'], violation['fee']))
 
       if violation['warrant'] == 'TRUE':
         t.say('this includes a warrant for your arrest')
