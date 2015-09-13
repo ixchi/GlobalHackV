@@ -179,7 +179,9 @@ def results(request):
 
     say = 'If you would like to talk to a court clerk about this, please say any of the following courts, or say goodbye: %s' % (', '.join(courts))
 
-    t.ask(choices=courts, say=say, attempts=3)
+    choice = Choices(','.join(courts))
+
+    t.ask(choices=choice, say=say, attempts=3)
     t.on(event='continue', next='/redir')
 
     return t.RenderJson()
