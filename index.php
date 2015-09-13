@@ -142,10 +142,10 @@ ORDER BY
 		}
 
 		if ($row['fine_amount'] != '') {
-			if (!property_exists($info, 'fines_owed')) $info->fines_owed = 0;
-			if (!property_exists($info, 'fees_owed')) $info->fees_owed = 0;
-			$info->fines_owed = ((int) substr($row['fine_amount'], 1)) + $info->fines_owed;
-			$info->fees_owed = ((int) substr($row['court_cost'], 1)) + $info->fees_owed;
+			if (!property_exists($info, 'fines_owed')) $info->fines_owed = 0.0;
+			if (!property_exists($info, 'fees_owed')) $info->fees_owed = 0.0;
+			$info->fines_owed = ((float) substr($row['fine_amount'], 1)) + $info->fines_owed;
+			$info->fees_owed = ((float) substr($row['court_cost'], 1)) + $info->fees_owed;
 		}
 	}
 
