@@ -12,8 +12,8 @@ def index(request):
 
   t.say('Welcome to the automated voice driving citations checker, a free service to find where and when you need to appear in court.')
 
-  choices = Choices('[2 DIGITS]', mode='any', attempts=3)
-  t.ask(choices, timeout=15, name='birthday_year', say='To verify who you are, please start by entering the last two digits of your year of birth')
+  choices = Choices('[2-4 DIGITS]', mode='dtmf', attempts=3)
+  t.ask(choices, timeout=15, name='birthday_year', say='To verify who you are, please start by entering your four digit year of birth')
 
   t.on(event='continue', next='/birthday_month')
 
@@ -29,9 +29,7 @@ def birthday_month(request):
 
   current[r._sessionId] = { 'birthday': { 'year': answer } }
 
-  print current[r._sessionId]
-
-  choices = Choices('1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12', mode='any')
+  choices = Choices('[1-2 DIGITS]', mode='dtmf')
   t.ask(choices, timeout=15, name='birthday_month', say='Please enter your month of birth as a number', attempts=3)
 
   t.on(event='continue', next='/birthday_day')
@@ -47,9 +45,7 @@ def birthday_day(request):
 
   current[r._sessionId]['birthday']['month'] = answer
 
-  print current[r._sessionId]
-
-  choices = Choices('1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31', mode='any')
+  choices = Choices('[1-2 DIGITS]', mode='dtmf')
   t.ask(choices, timeout=15, name='birthday_day', say='Please enter your date of birth', attempts=3)
 
   t.on(event='continue', next='/name')
@@ -67,8 +63,6 @@ def name(request):
 
   b = current[r._sessionId]['birthday']
 
-  print current[r._sessionId]
-
   if len(b['month']) == 1: b['month'] = '0' + b['month']
   if len(b['day']) == 1: b['day'] = '0' + b['day']
 
@@ -78,10 +72,10 @@ def name(request):
   db = MySQLdb.connect(host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
   cur = db.cursor()
 
-  cur.execute('SELECT COUNT(*) AS count FROM good_data_fixed WHERE date_of_birth LIKE %s', ('%' + formatted_birthday, ))
+  cur.execute('SELECT COUNT(*) AS count FROM good_data_fixed WHERE date_of_birth = %s', (formatted_birthday, ))
   result = cur.fetchone()
 
-  cur.execute('SELECT last_name FROM good_data_fixed WHERE date_of_birth LIKE %s', ('%' + formatted_birthday, ))
+  cur.execute('SELECT last_name FROM good_data_fixed WHERE date_of_birth = %s', (formatted_birthday, ))
   people = cur.fetchall()
 
   cur.close()
@@ -112,12 +106,10 @@ def results(request):
 
   u = current[r._sessionId]
 
-  print current[r._sessionId]
-
   db = MySQLdb.connect(host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
   cur = db.cursor()
 
-  cur.execute('SELECT court_date, court_location, violation_description, first_name, last_name, warrant_status, fine_amount, court_cost FROM good_data_fixed WHERE date_of_birth LIKE %s AND last_name LIKE %s', ('%' + u['birthday'], answer, ))
+  cur.execute('SELECT court_date, court_location, violation_description, first_name, last_name, warrant_status, fine_amount, court_cost FROM good_data_fixed WHERE date_of_birth = %s AND last_name LIKE %s', (u['birthday'], answer, ))
   result = cur.fetchall()
 
   cur.close()
