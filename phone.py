@@ -145,7 +145,8 @@ def results(request):
 
             dates[row[0]] = {'date': nice, 'location': row[1], 'events': []}
 
-        courts.append(row[1])
+        if not row[1] in courts:
+            courts.append(row[1])
 
         dates[row[0]]['events'].append({
             'fine': row[6],
@@ -180,16 +181,16 @@ def results(request):
 
     courts.append('goodbye')
 
-    choice = Choices(','.join(list(set(courts))))
+    choice = Choices(','.join(courts))
 
     t.ask(choices=choice, say=say, attempts=3)
-    t.on(event='continue', next='/redir')
+    t.on(event='continue', next='/talkto')
 
     return t.RenderJson()
 
-@post('/redir')
-def redir(request):
-    r = Request(request.body)
+@post('/talkto')
+def talkto(request):
+    r = Result(request.body)
     t = Tropo()
 
     answer = r.getInterpretation()
