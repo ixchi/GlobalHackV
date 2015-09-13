@@ -31,7 +31,7 @@ def birthday_month(request):
 
   print current[r._sessionId]
 
-  choices = Choices('1(1, jan, january), 2(2, feb, february), 3(3, mar, march), 4(4, april), 5(5, may), 6(6, june), 7(7, july), 8(8, aug, august), 9(9, sept, september), 10(10, october), 11(11, nov, november), 12(12, dec, december)', mode='any')
+  choices = Choices('1(1, january), 2(2, february), 3(3, march), 4(4, april), 5(5, may), 6(6, june), 7(7, july), 8(8, august), 9(9, september), 10(10, october), 11(11, november), 12(12, december)', mode='any')
   t.ask(choices, timeout=15, name='birthday_month', say='Please enter your month of birth as a number', attempts=3)
 
   t.on(event='continue', next='/birthday_day')
