@@ -156,7 +156,7 @@ def results(request):
         host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
     cur = db.cursor()
 
-    cur.execute('SELECT court_date, court_location, violation_description, first_name, last_name, warrant_status, fine_amount, court_cost FROM good_data_fixed WHERE date_of_birth = %s AND last_name LIKE %s AND drivers_license_number LIKE %s status <> \'CLOSED\' AND status <> \'DISMISS WITHOUT COSTS\'', (u[
+    cur.execute('SELECT court_date, court_location, violation_description, first_name, last_name, warrant_status, fine_amount, court_cost FROM good_data_fixed WHERE date_of_birth = %s AND last_name LIKE %s AND drivers_license_number LIKE %s AND status <> \'CLOSED\' AND status <> \'DISMISS WITHOUT COSTS\'', (u[
                 'birthday'], u['last_name'], '%' + answer))
     result = cur.fetchall()
 
