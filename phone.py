@@ -120,18 +120,35 @@ def results(request):
   total_cost = 0
   total_fees = 0
 
+  dates = {}
   for row in result:
-    d = datetime.strptime(row[0], '%Y-%m-%d')
-    nice = d.strftime('%A, %B, %-d, %Y')
-    t.say('You have a court date on %s at %s for %s.' % (nice, row[1], row[2]))
+    if row[0] not in dates:
+      d = datetime.strptime(row[0], '%Y-%m-%d')
+      nice = d.strftime('%A, %B, %-d, %Y')
 
-    if row[6] != '':
-      total_cost += float(row[6][1:])
-      total_fees += float(row[7][1:])
-      t.say('There is a %s fine and %s court fee for this.' % (row[6], row[7]))
+      dates[row[0]] = { 'date': nice, 'location': row[1], 'events': [] }
 
-    if row[5] == 'TRUE':
-      t.say('This includes a warrant for your arrest.')
+    dates[row[0]]['events'].append({
+      'fine': row[6],
+      'fee': row[7],
+      'description': row[2],
+      'warrant': row[5]
+    })
+
+    total_cost += float(row[6][1:])
+    total_fees += float(row[7][1:])
+
+  for date, info in dates.iteritems():
+    t.say('You have a court date on %s. This is for the following violations' % (info['date']))
+
+    for violation in info['events']:
+      t.say('Violation ' + violation['description'])
+
+      if violation['fine'] != '':
+        t.say('with a $%s fine and $%s court fee' % (violation['fine'], violation['fee']))
+
+      if violation['warrant'] == 'TRUE':
+        t.say('this includes a warrant for your arrest')
 
   if total_cost > 0:
     t.say('Your total fines are $%.2f and your total fees are $%.2f, bringing the total cost to $%.2f.' % (total_cost, total_fees, total_cost+total_fees))
