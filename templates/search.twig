@@ -16,7 +16,7 @@
 					<div class="alert alert-warning fine" data-toggle="modal" data-target="#fineModal" data-violation="{{ fine.violation }}" style="cursor: pointer">You have a fine for {{ fine.violation_description }} for {{ fine.fine_amount }} plus {{ fine.court_cost }} in court fees. Click here for more information about <strong>citation {{ fine.citation }}</strong>.</div>
 				{% endfor %}
 
-				{% if info.fines_owed != '' %}You owe a total <strong>${{ info.fines_owed }}</strong> in fines, and <strong>{{ info.fees_owed }}</strong> in court fees. You could pay this off in <strong>{{ (info.fines_owed+info.fees_owed) // 15 }} hours</strong> of community service.{% endif %}
+				{% if info.fines_owed != '' %}You owe a total <strong>${{ info.fines_owed }}</strong> in fines, and <strong>${{ info.fees_owed }}</strong> in court fees. You could pay this off in <strong>{{ (info.fines_owed+info.fees_owed) // 15 }} hours</strong> of community service.{% endif %}
 			</div>
 		</div>
 
