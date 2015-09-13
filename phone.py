@@ -134,7 +134,7 @@ def results(request):
       t.say('This includes a warrant for your arrest.')
 
   if total_cost > 0:
-    t.say('Your total fines are $%.2f and your total fees are $%.2f' % (total_cost, total_fees))
+    t.say('Your total fines are $%.2f and your total fees are $%.2f, bringing the total cost to $%.2f.' % (total_cost, total_fees, total_cost+total_fees))
 
   t.say('Thank you for calling, have a nice day.')
 
