@@ -177,7 +177,8 @@ def results(request):
         t.say('Your total fines are $%.2f and your total fees are $%.2f, bringing the total cost to $%.2f.' % (
             total_cost, total_fees, total_cost+total_fees))
 
-    say = 'If you would like to talk to a court clerk about this, please say any of the following courts, or say goodbye: %s' % (', '.join(courts))
+    say = 'If you would like to talk to a court clerk about this, please say any of the following courts, or say goodbye: %s' % (
+        ', '.join(courts))
 
     courts.append('goodbye')
 
@@ -187,6 +188,7 @@ def results(request):
     t.on(event='continue', next='/talkto')
 
     return t.RenderJson()
+
 
 @post('/talkto')
 def talkto(request):
@@ -200,13 +202,15 @@ def talkto(request):
 
         return t.RenderJson()
 
-    t.say('As we currently do not have transfer abilites, here is the phone number: ')
+    t.say(
+        'As we currently do not have transfer abilites, here is the phone number: ')
 
     db = MySQLdb.connect(
         host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
     cur = db.cursor()
 
-    cur.execute('SELECT `Court Clerk Phone Number` as `phone` from `munipality` where `Municipality` = UPPER(%s)', (answer, ))
+    cur.execute(
+        'SELECT `Court Clerk Phone Number` as `phone` from `munipality` where `Municipality` = UPPER(%s)', (answer, ))
     result = cur.fetchone()
 
     cur.close()
