@@ -206,7 +206,7 @@ def talkto(request):
         host='localhost', user='globalhackv', passwd='globalhack', db='globalhackv')
     cur = db.cursor()
 
-    cur.execute('SELECT `Court Clerk Phone Number` as `phone` from `munipality` where `Municipality` = UPPER(%s)' % (answer))
+    cur.execute('SELECT `Court Clerk Phone Number` as `phone` from `munipality` where `Municipality` = UPPER(%s)', (answer, ))
     result = cur.fetchone()
 
     cur.close()
