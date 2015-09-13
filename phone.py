@@ -136,7 +136,6 @@ def results(request):
     total_cost = 0
     total_fees = 0
     courts = []
-    courts.append('goodbye')
 
     dates = {}
     for row in result:
@@ -179,7 +178,9 @@ def results(request):
 
     say = 'If you would like to talk to a court clerk about this, please say any of the following courts, or say goodbye: %s' % (', '.join(courts))
 
-    choice = Choices(','.join(courts))
+    courts.append('goodbye')
+
+    choice = Choices(','.join(list(set(courts))))
 
     t.ask(choices=choice, say=say, attempts=3)
     t.on(event='continue', next='/redir')
