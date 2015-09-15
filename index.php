@@ -7,13 +7,16 @@ require __DIR__ . '/vendor/autoload.php';
 $klein = new \Klein\Klein();
 
 $klein->respond(function ($request, $response, $service, $app) {
+	$config = parse_ini_file('config.ini', true);
+	$app->config = $config;
+
 	$loader = new Twig_Loader_Filesystem(__DIR__ . '/templates');
 	$twig = new Twig_Environment($loader);
 
 	$service->twig = $twig;
 
 	$app->register('db', function () {
-		return new PDO('mysql:host=127.0.0.1;dbname=globalhackv', 'globalhackv', 'globalhack');
+		return new PDO("mysql:host={$config['mysql']['host']};dbname={$config['mysql']['db']}", $config['mysql']['user'], $config['mysql']['pass']);
 	});
 });
 
